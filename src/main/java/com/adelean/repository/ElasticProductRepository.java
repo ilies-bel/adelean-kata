@@ -14,15 +14,23 @@ import org.elasticsearch.client.RestClient;
 import java.io.IOException;
 import java.util.List;
 
-public class ElasticRepository {
-    ObjectMapper objectMapper = JacksonObjectMapper.objectMapper();
+public class ElasticProductRepository {
+    private static final String PRODUCTS_INDEX = "products";
+    private static final String BULK_ENDPOINT = "/_bulk";
+
+    private final ObjectMapper objectMapper;
+    private final RestClient restClient;
+
+    public ElasticProductRepository() {
+        this.objectMapper = JacksonObjectMapper.get();
+        this.restClient = ElasticSearchClient.getClient();
+    }
 
     public void save(List<Product> products) {
-        RestClient restClient = ElasticSearchClient.getClient();
 
         String bulkRequestBody = buildBulkRequest(products);
 
-        Request request = new Request("POST", "/_bulk");
+        Request request = new Request("POST", BULK_ENDPOINT);
 
         request.setJsonEntity(bulkRequestBody);
 
@@ -47,7 +55,7 @@ public class ElasticRepository {
             ObjectNode indexMetadata = objectMapper.createObjectNode();
 
             indexMetadata.putObject("index")
-                    .put("_index", "products")
+                    .put("_index", PRODUCTS_INDEX)
                     .put("_id", prd.getId());
 
             try {

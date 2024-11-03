@@ -24,6 +24,81 @@ documents in memory at once.
 
 - Java 21
 - Maven 3.8.4
+- Docker compose
+
+## With Sdkman
+
+```shell
+sdk env
+````
 
 # How to run
 
+## Start Elasticsearch
+
+```shell
+docker compose up -d
+```
+
+## Run the application
+
+add a .env file by copying the .env.example file and fill the values
+
+```shell
+cp .env.example .env
+```
+
+```shell
+mvn clean install
+export $(cat .env | xargs)
+java -jar target/kata-1.0-SNAPSHOT-jar-with-dependencies.jar
+```
+
+You can then check the data in Elasticsearch with the following command:
+
+```shell
+curl -X GET "localhost:9200/products/_search" -H 'Content-Type: application/json' -d'
+{
+  "query": {
+    "match_all": {}
+  }, "_source": true, "size" : 1000
+}'
+```
+
+# Solution
+
+- Adaptation des versions d'Elasticsearch pour la compatibilité avec les processeurs Apple M2
+- Implémentation d'une architecture en couches simple et maintenable
+- Utilisation de librairies standards pour faciliter la maintenance à long terme
+
+# Pistes d'amélioration
+
+## Gestion des identifiants uniques
+
+Cette problématique nécessite une analyse approfondie du contexte métier :
+
+- Nécessité d'un système de versioning
+- Niveau de fiabilité requis pour la source de données
+
+Actuellement, l'identifiant suit le format : `prod_<brand>_<sku>`
+
+## Tests d'intégration
+
+Mise en place de tests d'intégration via TestContainers avec une instance Elasticsearch pour valider le fonctionnement
+de bout en bout.
+
+## Optimisation du traitement des données volumineuses
+
+Le programme gère actuellement la lecture de fichiers volumineux via `XMLStreamReader`, mais effectue l'écriture dans
+Elasticsearch en un seul lot. Deux axes d'amélioration sont envisageables :
+
+- Optimisation des paramètres du bulkProcessor
+- Implémentation d'une solution de traitement par lots (ex: Spring Batch) si nécessaire
+
+## Nettoyage post-traitement
+
+Ajout d'une étape de suppression automatique du fichier XML après son traitement et son indexation dans Elasticsearch.
+
+## Sécurisation d'Elasticsearch
+
+Implémentation de l'authentification Elasticsearch dans la configuration `.env`

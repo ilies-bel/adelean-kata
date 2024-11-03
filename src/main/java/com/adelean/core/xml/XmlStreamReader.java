@@ -11,7 +11,7 @@ public enum XmlStreamReader {
 
     private final XMLInputFactory factory = XMLInputFactory.newInstance();
 
-    public XMLStreamReader getReader(FileInputStream fileStream) {
+    public XMLStreamReader getNewReader(FileInputStream fileStream) {
         try {
             return factory.createXMLStreamReader(fileStream);
         } catch (XMLStreamException e) {

@@ -3,48 +3,65 @@ package com.adelean.xmlReader;
 import com.adelean.core.xml.XmlReadingException;
 import com.adelean.core.xml.XmlStreamReader;
 import com.adelean.xmlReader.models.Product;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ProductXmlReader {
+    private static final String PRODUCT_ELEMENT = "product";
+    Logger logger = LoggerFactory.getLogger(ProductXmlReader.class);
 
     public List<Product> read(Path filePath) {
+        logger.info("Reading XML file: {}", filePath);
+        List<Product> products;
 
-        List<Product> products = new ArrayList<>();
+        try (FileInputStream fileStream = new FileInputStream(filePath.toFile());
+        ) {
 
+            XMLStreamReader reader = getXmlReader(fileStream);
+            products = parseProducts(reader);
 
-        try (var fileStream = new FileInputStream(filePath.toFile())) {
-
-            var reader = XmlStreamReader.INSTANCE.getReader(fileStream);
-
-            while (reader.hasNext()) {
-                int event = reader.next();
-
-                if (event == XMLStreamConstants.START_ELEMENT) {
-                    String elementName = reader.getLocalName();
-
-                    if (elementName.equals("product")) {
-                        products.add(Product.fromXml(reader));
-                    }
-                }
-            }
+            logger.info("Read {} products", products.size());
 
             reader.close();
-        } catch (IOException e) {
-            throw new RuntimeException("The file " + filePath + " was not found", e);
-        } catch (XMLStreamException e) {
+        } catch (IOException | XMLStreamException e) {
             throw new XmlReadingException(
-                    "An error occurred while reading the XML file " + filePath, e);
+                    String.format("Failed to read XML file: %s", filePath), e);
         }
 
+        return products;
+    }
+
+    private XMLStreamReader getXmlReader(FileInputStream fileStream)
+            throws XMLStreamException {
+        return XmlStreamReader.INSTANCE.getNewReader(fileStream);
+    }
+
+    private List<Product> parseProducts(XMLStreamReader reader)
+            throws XMLStreamException {
+        List<Product> products = new LinkedList<>();
+
+        while (reader.hasNext()) {
+            if (isProductElement(reader)) {
+                products.add(Product.fromXml(reader));
+            }
+            reader.next();
+        }
 
         return products;
+    }
+
+    private boolean isProductElement(XMLStreamReader reader) {
+        return reader.getEventType() == XMLStreamConstants.START_ELEMENT
+                && PRODUCT_ELEMENT.equals(reader.getLocalName());
     }
 }
 

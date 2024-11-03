@@ -34,21 +34,21 @@ public record Product(
     }
 
     public String getId() {
-        String cleanSku = sku != null ? sku.replaceAll("[^a-zA-Z0-9]", "") : "";
-        String cleanEan = ean13 != null ? ean13.replaceAll("[^a-zA-Z0-9]", "") : "";
-
-        if (cleanSku.isEmpty() && cleanEan.isEmpty()) {
-            throw new IllegalArgumentException("Both SKU and EAN13 cannot be empty");
+        if (sku == null || sku.trim().isEmpty()) {
+            throw new IllegalArgumentException("SKU cannot be null or empty");
+        }
+        if (brand == null || brand.name() == null) {
+            throw new IllegalArgumentException("Brand or brand name cannot be null");
         }
 
-        if (cleanSku.isEmpty()) {
-            return "ean_" + cleanEan;
-        }
-        if (cleanEan.isEmpty()) {
-            return "sku_" + cleanSku;
+        String cleanSku = sku.replaceAll("[^a-zA-Z0-9]", "");
+        String cleanBrand = brand.name().toLowerCase().replaceAll("[^a-zA-Z0-9]", "");
+
+        if (cleanSku.isEmpty() || cleanBrand.isEmpty()) {
+            throw new IllegalArgumentException("SKU and brand must contain valid characters");
         }
 
-        return cleanSku + "_" + cleanEan;
+        return String.format("prod_%s_%s", cleanBrand.toLowerCase(), cleanSku);
     }
 
     public static class Builder {

@@ -18,7 +18,7 @@ public class JacksonObjectMapper {
             .propertyNamingStrategy(SNAKE_CASE)
             .build();
 
-    public static ObjectMapper objectMapper() {
+    public static ObjectMapper get() {
         return OBJECT_MAPPER;
     }
 }
