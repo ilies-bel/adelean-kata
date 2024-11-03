@@ -1,10 +1,9 @@
-package com.adelean.Reader.models;
+package com.adelean.core.xml;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-// Utility class for common XML parsing operations
 public class XmlParserUtils {
     public static String readCharacters(XMLStreamReader reader) throws XMLStreamException {
         StringBuilder result = new StringBuilder();

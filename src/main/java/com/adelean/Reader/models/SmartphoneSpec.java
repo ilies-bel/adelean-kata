@@ -16,4 +16,9 @@ public class SmartphoneSpec {
 
         specsMap.put(elementSanitized, value);
     }
+
+
+    public Map<String, String> getSpecsMap() {
+        return specsMap;
+    }
 }

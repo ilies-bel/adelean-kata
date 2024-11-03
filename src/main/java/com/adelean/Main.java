@@ -1,13 +1,12 @@
 package com.adelean;
 
 import com.adelean.Reader.ProductXmlReader;
+import com.adelean.repository.ElasticRepository;
 
-import javax.xml.stream.XMLStreamException;
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
 
 public class Main {
-    public static void main(String[] args) throws FileNotFoundException, XMLStreamException {
+    public static void main(String[] args) {
 
         // dezip the file
 
@@ -15,11 +14,13 @@ public class Main {
         Path filePath = Path.of("src/main/resources/xml.xml");
 
         ProductXmlReader productXmlReader = new ProductXmlReader();
-        var products = productXmlReader.readXml(filePath);
+        var products = productXmlReader.read(filePath);
 
         // load the file into elastic adding indexes
 
+        ElasticRepository elasticRepository = new ElasticRepository();
 
+        elasticRepository.save(products);
     }
 }
 
