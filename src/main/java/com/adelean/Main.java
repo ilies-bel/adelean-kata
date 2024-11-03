@@ -1,25 +1,22 @@
 package com.adelean;
 
-import com.adelean.Reader.ProductXmlReader;
 import com.adelean.repository.ElasticRepository;
-
-import java.nio.file.Path;
+import com.adelean.xmlReader.ProductXmlReader;
 
 public class Main {
     public static void main(String[] args) {
 
-        // dezip the file
+        // unzip the file
+        var filePath = new ProductZipService().unzipFolder();
 
-        // read the file using java stax
-        Path filePath = Path.of("src/main/resources/xml.xml");
 
+        // read the content and map it to objects
         ProductXmlReader productXmlReader = new ProductXmlReader();
         var products = productXmlReader.read(filePath);
 
+
         // load the file into elastic adding indexes
-
         ElasticRepository elasticRepository = new ElasticRepository();
-
         elasticRepository.save(products);
     }
 }

@@ -1,8 +1,8 @@
-package com.adelean.Reader;
+package com.adelean.xmlReader;
 
-import com.adelean.Reader.models.Product;
 import com.adelean.core.xml.XmlReadingException;
 import com.adelean.core.xml.XmlStreamReader;
+import com.adelean.xmlReader.models.Product;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;

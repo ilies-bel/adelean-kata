@@ -1,4 +1,4 @@
-package com.adelean.Reader.models;
+package com.adelean.xmlReader.models;
 
 import com.adelean.core.xml.XmlParserUtils;
 import com.adelean.core.xml.XmlReadingException;
@@ -37,12 +37,10 @@ public record Product(
         String cleanSku = sku != null ? sku.replaceAll("[^a-zA-Z0-9]", "") : "";
         String cleanEan = ean13 != null ? ean13.replaceAll("[^a-zA-Z0-9]", "") : "";
 
-        // If both are empty, throw exception
         if (cleanSku.isEmpty() && cleanEan.isEmpty()) {
             throw new IllegalArgumentException("Both SKU and EAN13 cannot be empty");
         }
 
-        // If one is empty, use the other
         if (cleanSku.isEmpty()) {
             return "ean_" + cleanEan;
         }
@@ -50,7 +48,6 @@ public record Product(
             return "sku_" + cleanSku;
         }
 
-        // Combine both if available
         return cleanSku + "_" + cleanEan;
     }
 

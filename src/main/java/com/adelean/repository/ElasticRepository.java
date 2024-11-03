@@ -1,9 +1,9 @@
 package com.adelean.repository;
 
 
-import com.adelean.Reader.models.Product;
 import com.adelean.core.ElasticSearchClient;
 import com.adelean.core.jackson.JacksonObjectMapper;
+import com.adelean.xmlReader.models.Product;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -49,7 +49,6 @@ public class ElasticRepository {
             indexMetadata.putObject("index")
                     .put("_index", "products")
                     .put("_id", prd.getId());
-
 
             try {
                 bulkRequestBody.append(objectMapper.writeValueAsString(indexMetadata))

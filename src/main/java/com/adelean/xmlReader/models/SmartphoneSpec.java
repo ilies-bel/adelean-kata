@@ -1,4 +1,4 @@
-package com.adelean.Reader.models;
+package com.adelean.xmlReader.models;
 
 import java.util.HashMap;
 import java.util.Map;

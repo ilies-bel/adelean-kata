@@ -1,4 +1,4 @@
-package com.adelean.Reader.models;
+package com.adelean.xmlReader.models;
 
 public record Warranty(
         String durationMonth,
